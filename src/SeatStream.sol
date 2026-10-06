@@ -233,6 +233,8 @@ contract SeatStream is EIP712, ReentrancyGuard {
         return block.timestamp + ((p.balance - _due(p)) * PERIOD) / price;
     }
 
+    /// @notice Streamed and unclaimed total if `tokenIds` were claimed now. For off-chain estimates only:
+    /// `tokenIds` must be distinct, since a repeated id is counted twice here (claim itself is not affected).
     function pendingClaim(uint256[] calldata tokenIds) external view returns (uint256 total) {
         total = claimable;
         for (uint256 i; i < tokenIds.length; ++i) {

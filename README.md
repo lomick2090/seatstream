@@ -11,7 +11,7 @@ A prepaid, per-second ETH payment stream for running an IdentityMD seat, one pos
 ## How it works
 
 - A holder opens a position for a token id with at least one period's price (0.05 ETH per 30 days on mainnets). The open needs an EIP-712 `Open(uint256 tokenId,address depositor,uint256 nonce,uint256 deadline)` signature from the keeper, where `nonce` is `openNonce(tokenId)`. Every open bumps the nonce, so a signature works once. The deadline must be at most 2 days ahead when `open` runs.
-- The balance streams to the payee by the second until it runs out. There is no debt and no grace period. Anyone can top up any amount with `deposit`.
+- The balance streams to the payee by the second until it runs out. There is no debt and no grace period. The depositor (only) can top up any amount with `deposit`.
 - The depositor can take back the unstreamed balance at any time with `withdraw`, or `withdrawTo` another address.
 - Roles are immutable and there is no admin or upgrade path.
   - Payee (a cold wallet): receives `claim`, may `release` a position, `revokeOpens`, and call the one-way `disableOpens()` that blocks `open` and `deposit` (every exit keeps working).
@@ -31,6 +31,11 @@ A prepaid, per-second ETH payment stream for running an IdentityMD seat, one pos
 - ETH forced in by selfdestruct or as a coinbase is unrecoverable. Accounting never reads `address(this).balance`.
 - The 2-day deadline bound is checked when `open` runs, not when the keeper signs. The keeper only signs short deadlines for the current nonce.
 - `paidUntil` is a floor and can sit up to 1 second before the balance runs out.
+- `pendingClaim(tokenIds)` is a view for off-chain estimates and assumes distinct ids: a repeated id is counted twice. `claim` is not affected (a second settlement of the same position streams 0).
+
+## Audits
+
+See [AUDIT.md](AUDIT.md).
 
 ## Build and test
 
