@@ -49,6 +49,12 @@ contract DeployTest is Test {
         vm.expectRevert(bytes("payee must be a plain wallet"));
         d.deploy();
 
+        vm.setEnv("SEATSTREAM_PAYEE", vm.toString(makeAddr("payee")));
+        vm.setEnv("SEATSTREAM_KEEPER", vm.toString(address(this))); // has code: cannot produce an ECDSA signature
+        d = new Deploy();
+        vm.expectRevert(bytes("keeper must be a plain wallet"));
+        d.deploy();
+
         vm.setEnv("SEATSTREAM_PAYEE", vm.toString(makeAddr("same")));
         vm.setEnv("SEATSTREAM_KEEPER", vm.toString(makeAddr("same")));
         d = new Deploy();
