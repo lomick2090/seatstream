@@ -1,0 +1,8 @@
+title = "seatstream"
+
+[extend]
+useDefault = true
+
+[[allowlists]]
+description = "Vendored third-party libraries (OpenZeppelin, forge-std); their test fixtures trip generic rules"
+paths = ['''^lib/''']
