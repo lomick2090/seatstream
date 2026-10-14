@@ -16,6 +16,8 @@ contract Deploy is Script {
         address keeper = vm.envAddress("SEATSTREAM_KEEPER");
         require(payee != keeper, "payee and keeper must differ");
         require(payee.code.length == 0, "payee must be a plain wallet");
+        // open() accepts only an ECDSA signature that recovers to the keeper; a contract has no key, so it could never open.
+        require(keeper.code.length == 0, "keeper must be a plain wallet");
         uint256 price = vm.envOr("SEATSTREAM_PRICE_WEI", MAINNET_PRICE);
         uint256 id = block.chainid;
         if (id == 8453 || id == 1) {

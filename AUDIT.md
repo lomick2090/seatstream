@@ -1,6 +1,24 @@
 # Audits
 
-## IdentityMD network audit (2026-10-06)
+## Status
+
+SeatStream is accepted for mainnet at source sha256 `ca5cbed30176b0088139868edbe1511eaceb4fc4fa6559f89098a7b1bc1d7bcd` (`src/SeatStream.sol`). Any change to `SeatStream.sol` requires a new audit before it is deployed.
+
+## IdentityMD network audit #2 (2026-10-06)
+
+| | |
+|---|---|
+| Job | `dc2377fd-21bc-4fcc-888e-f621a121961e` (template `audit`, paid 0.5 IMD) |
+| Commit audited | `10ccf075573dc34773ac2be586116595cfac13cf` |
+| Report | https://api.imd.fun/jobs/dc2377fd-21bc-4fcc-888e-f621a121961e/report.md |
+| Judged | 2026-10-06 11:35 UTC; the judge reproduced every kept finding |
+
+| Finding | Severity | Resolution |
+|---|---|---|
+| `script/Deploy.s.sol` refuses a payee with code but not a keeper with code. A contract keeper can't sign, so `open()` would never succeed on that immutable deployment. | Low | Fixed: the script now requires a keeper with no code, with a test. Script only; the contract is unchanged. |
+| `claim()` always pushes to the immutable payee with no other recipient, so a payee that later rejects ETH (only through its own bad EIP-7702 delegation) would strand revenue. | Info | Accepted as a trust assumption. The payee is a plain cold wallet. Depositor funds are unaffected. |
+
+## IdentityMD network audit #1 (2026-10-06)
 
 | | |
 |---|---|
